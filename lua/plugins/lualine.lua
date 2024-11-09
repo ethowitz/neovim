@@ -10,18 +10,18 @@ local config = {
       lualine_a = {},
       lualine_b = {},
       lualine_c = {
-        {
-          "filetype",
-          colored = true,
-          icon_only = true,
-        },
+        -- {
+        --   "filetype",
+        --   colored = true,
+        --   icon_only = true,
+        -- },
         {
           "filename",
-          path = 0,
-          padding = { left = 0 },
+          path = 1,
+          -- padding = { left = 0 },
           symbols = {
             modified = " ", -- Text to show when the file is modified.
-            readonly = "", -- Text to show when the file is non-modifiable or readonly.
+            readonly = " ", -- Text to show when the file is non-modifiable or readonly.
             unnamed = "",
             newfile = " ", -- Text to show for newly created file before first write
           },
@@ -37,7 +37,7 @@ local config = {
           "diagnostics",
           sources = { "nvim_workspace_diagnostic" },
           sections = { "error", "warn" },
-          symbols = { error = "  ", warn = "  ", info = "󰋼 ", hint = "󰌵" },
+          symbols = { error = "  ", warn = "  ", info = "󰋼 ", hint = "󰌵 " },
           colored = true,
           update_in_insert = false,
           padding = { right = 0 },
