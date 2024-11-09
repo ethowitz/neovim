@@ -4,7 +4,7 @@ local config = {
     options = {
       component_separators = { left = "", right = "" },
       section_separators = { left = "", right = "" },
-      theme = "nightfox",
+      theme = "tokyonight-storm",
     },
     sections = {
       lualine_a = {},

@@ -1,1 +1,6 @@
-return { "folke/lazy.nvim", version = "*" }
+return {
+  { import = "plugins.lsp" },
+  { import = "plugins.themes" },
+
+  { "folke/lazy.nvim", version = "*" },
+}

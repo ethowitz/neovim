@@ -1,60 +1,82 @@
+local config_dir = vim.api.nvim_call_function("stdpath", { "config" })
+
 return {
-  ----------------------------------- GIT -------------------------------------
-  {
-    "lewis6991/gitsigns.nvim",
-    opts = {
-      on_attach = function(bufnr)
-        local gs = package.loaded.gitsigns
-        require("which-key").add({
-          {
-            "[g",
-            function()
-              gs.prev_hunk()
-            end,
-            desc = "prev hunk",
-          },
-          {
-            "]g",
-            function()
-              gs.next_hunk()
-            end,
-            desc = "next hunk",
-          },
-        }, { buffer = bufnr })
-      end,
-    },
-  },
-  "tpope/vim-fugitive",
-  {
-    "ruifm/gitlinker.nvim",
-    dependencies = "nvim-lua/plenary.nvim",
-    opts = {},
-  },
-
-  ------------------------------------ UI -------------------------------------
-  "kyazdani42/nvim-web-devicons",
-  {
-    "stevearc/oil.nvim",
-    opts = {},
-  },
-  { 'folke/todo-comments.nvim',               event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
-  {
-    'akinsho/toggleterm.nvim',
-    opts = {
-      hide_numbers = false,
-      shade_terminals = false,
-      direction = 'tab',
-      open_mapping = [[<c-\>]],
-    },
-  },
-
-  ---------------------------------- TELESCOPE --------------------------------
   {
     "nvim-telescope/telescope.nvim",
     version = "0.1.6",
     dependencies = {
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
       "nvim-lua/plenary.nvim",
+    },
+    keys = {
+      { "<leader>d", ":Telescope cder<CR>", desc = "change directory" },
+      {
+        "<leader>/",
+        ":Telescope live_grep<CR>",
+        desc = "live grep in current directory",
+      },
+      {
+        "<leader><space>",
+        ":Telescope find_files<CR>",
+        desc = "find file in current directory",
+      },
+      { "<leader>fgc", ":Telescope git_commits<CR>", desc = "search commit history" },
+      { "<leader>fgh", ":Telescope git_bcommits<CR>", desc = "search commit history for this buffer" },
+      { "<leader>fh", ":Telescope help_tags<CR>", desc = "search neovim help tags" },
+
+      { "<leader>fr", ":Telescope lsp_references<CR>", desc = "find references to symbol at cursor" },
+      { "<leader>ft", ":Telescope lsp_dynamic_workspace_symbols<CR>", desc = "find LSP types" },
+
+      {
+        "<leader>fu",
+        ":Telescope builtin<CR>",
+        desc = "search other available telescope searches",
+      },
+      { "<leader>m", ":Telescope marks<CR>", desc = "search marks" },
+      {
+        ",",
+        function()
+          require("telescope.builtin").buffers({ sort_mru = true })
+        end,
+        desc = "search oldfiles",
+      },
+      {
+        "<C-p>",
+        function()
+          require("telescope.builtin").buffers({ sort_mru = true })
+        end,
+        desc = "search oldfiles",
+      },
+      {
+        "<C-n>",
+        function()
+          require("telescope.builtin").buffers({ sort_mru = true, ignore_current_buffer = true })
+        end,
+        desc = "search oldfiles",
+      },
+      {
+        "<leader>cf",
+        function()
+          require("telescope.builtin").find_files({ cwd = config_dir })
+        end,
+        desc = "find config file",
+      },
+      {
+        "<leader>fd/",
+        function()
+          local dir = vim.fn.input("Directory: ", "", "file")
+          require("telescope.builtin").live_grep({ search_dirs = { dir } })
+        end,
+        desc = "live grep in specific directory",
+      },
+      {
+        "<leader>fd<space>",
+        function()
+          local dir = vim.fn.input("Directory: ", "", "file")
+          require("telescope.builtin").find_files({ search_dirs = { dir } })
+        end,
+        desc = "find file in specific directory",
+      },
     },
     config = function()
       local actions = require("telescope.actions")
@@ -157,18 +179,18 @@ return {
               }
             end,
             previewer_command = "eza "
-                .. "-a "
-                .. "--color=always "
-                .. "-T "
-                .. "--level=3 "
-                .. "--icons "
-                .. "--git-ignore "
-                .. "--long "
-                .. "--no-permissions "
-                .. "--no-user "
-                .. "--no-filesize "
-                .. "--git "
-                .. "--ignore-glob=.git",
+              .. "-a "
+              .. "--color=always "
+              .. "-T "
+              .. "--level=3 "
+              .. "--icons "
+              .. "--git-ignore "
+              .. "--long "
+              .. "--no-permissions "
+              .. "--no-user "
+              .. "--no-filesize "
+              .. "--git "
+              .. "--ignore-glob=.git",
           },
         },
       })
@@ -178,7 +200,7 @@ return {
       telescope.load_extension("ui-select")
     end,
   },
-  { 'nvim-telescope/telescope-ui-select.nvim' },
+  { "nvim-telescope/telescope-ui-select.nvim" },
   { "Zane-/cder.nvim" },
   {
     "prochri/telescope-all-recent.nvim",
@@ -189,22 +211,22 @@ return {
     opts = {
       scoring = {
         recency_modifier = {
-          [1] = { age = 240, value = 100 },   -- past 4 hours
-          [2] = { age = 1440, value = 90 },   -- past day
-          [3] = { age = 4320, value = 80 },   -- past 3 days
-          [4] = { age = 10080, value = 60 },  -- past week
-          [5] = { age = 43200, value = 50 },  -- past month
+          [1] = { age = 240, value = 100 }, -- past 4 hours
+          [2] = { age = 1440, value = 90 }, -- past day
+          [3] = { age = 4320, value = 80 }, -- past 3 days
+          [4] = { age = 10080, value = 60 }, -- past week
+          [5] = { age = 43200, value = 50 }, -- past month
           [6] = { age = 129600, value = 10 }, -- past 90 days
         },
         -- how much the score of a recent item will be improved.
         boost_factor = 0.0001,
       },
       default = {
-        disable = true,     -- disable any unkown pickers (recommended)
-        use_cwd = true,     -- differentiate scoring for each picker based on cwd
+        disable = true, -- disable any unkown pickers (recommended)
+        use_cwd = true, -- differentiate scoring for each picker based on cwd
         sorting = "recent", -- sorting: options: 'recent' and 'frecency'
       },
-      pickers = {           -- allows you to overwrite the default settings for each picker
+      pickers = { -- allows you to overwrite the default settings for each picker
         find_files = {
           disable = false,
           sorting = "frecency",
@@ -217,56 +239,4 @@ return {
       },
     },
   },
-
-  ----------------------------- MOVEMENT AND SYNTAX --------------------------
-  {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    config = function()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = {
-          "lua",
-          "rust",
-          "toml",
-          "terraform",
-          "python",
-          "asm",
-          "bash",
-          "sql",
-          "ruby",
-          "typescript",
-          "yaml",
-        },
-        auto_install = true,
-        highlight = {
-          enable = true,
-          additional_vim_regex_highlighting = { "ruby" },
-        },
-        indent = { enable = true, disable = { "ruby" } },
-        ident = { enable = true },
-        -- rainbow = {
-        --   enable = true,
-        --   extended_mode = true,
-        --   max_file_lines = nil,
-        -- },
-      })
-    end,
-  },
-  {
-    "windwp/nvim-autopairs",
-    event = "InsertEnter",
-    config = true,
-    -- use opts = {} for passing setup options
-    -- this is equivalent to setup({}) function
-  },
-  "tpope/vim-sleuth", -- automatically set 'shiftwidth' and 'expandtab'
-  -- {
-  --   "kwkarlwang/bufjump.nvim",
-  --   config = function()
-  --     require("bufjump").setup({
-  --       forward = "<C-n>",
-  --       backward = "<C-p>",
-  --     })
-  --   end,
-  -- },
 }
