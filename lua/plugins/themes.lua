@@ -2,8 +2,8 @@ return {
   {
     "folke/tokyonight.nvim",
     opts = {
-      style = "moon",
-      light_style = "day",
+      style = "storm",
+      dim_inactive = true,
       styles = {
         -- Style to be applied to different syntax groups
         -- Value is any valid attr-list value for `:help nvim_set_hl`
@@ -12,8 +12,8 @@ return {
         functions = {},
         variables = {},
         -- Background styles. Can be "dark", "transparent" or "normal"
-        sidebars = "transparent", -- style for sidebars, see below
-        floats = "transparent", -- style for floating windows
+        -- sidebars = "transparent", -- style for sidebars, see below
+        -- floats = "transparent",   -- style for floating windows
       },
       day_brightness = 0.1,
     },
@@ -25,9 +25,9 @@ return {
         enable = true,
         simulate_only = false, -- Only show simulated colorblind colors and not diff shifted
         severity = {
-          protan = 0.5, -- Severity [0,1] for protan (red)
-          deutan = 0.2, -- Severity [0,1] for deutan (green)
-          tritan = 0, -- Severity [0,1] for tritan (blue)
+          protan = 0.5,        -- Severity [0,1] for protan (red)
+          deutan = 0.2,        -- Severity [0,1] for deutan (green)
+          tritan = 0,          -- Severity [0,1] for tritan (blue)
         },
       },
     },

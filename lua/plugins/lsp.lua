@@ -23,6 +23,16 @@ return {
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("UserLspConfig", {}),
         callback = function(ev)
+          for _, method in ipairs({ 'textDocument/diagnostic', 'workspace/diagnostic' }) do
+            local default_diagnostic_handler = vim.lsp.handlers[method]
+            vim.lsp.handlers[method] = function(err, result, context, config)
+              if err ~= nil and err.code == -32802 then
+                return
+              end
+              return default_diagnostic_handler(err, result, context, config)
+            end
+          end
+
           -- Enable completion triggered by <c-x><c-o>
           vim.api.nvim_buf_set_option(ev.buf, "omnifunc", "v:lua.vim.lsp.omnifunc")
 
@@ -116,7 +126,7 @@ return {
             {
               "]d",
               function()
-                vim.diagnostic.goto_prev({
+                vim.diagnostic.goto_next({
                   float = false,
                   severity = {
                     min = vim.diagnostic.severity.WARN,
@@ -174,28 +184,86 @@ return {
         },
       })
 
+      lspconfig.pyright.setup {
+        on_attach = on_attach,
+        settings = {
+          python = {
+            defaultInterpreterPath = "/home/discord/.virtualenvs/discord_api/bin/python",
+            terminal = {
+              activateEnvironment = false,
+              unittestEnabled = false,
+            },
+            analysis = {
+              autoImportCompletions = true,
+              indexing = true,
+              userFileIndexingLimit = -1,
+              typeCheckingMode = "off",
+              diagnosticSeverityOverrides = {
+                reportAssertAlwaysTrue = "warning",
+                reportCallInDefaultInitializer = "warning",
+                reportDuplicateImport = "warning",
+                reportIncompatibleVariableOverride = "warning",
+                reportInconsistentConstructor = "warning",
+                reportInvalidStringEscapeSequence = "warning",
+                reportInvalidStubStatement = "warning",
+                reportMatchNotExhaustive = "warning",
+                reportMissingParameterType = "warning",
+                reportOptionalCall = "warning",
+                reportOptionalContextManager = "warning",
+                reportOptionalIterable = "warning",
+                reportOptionalMemberAccess = "warning",
+                reportOptionalOperand = "warning",
+                reportOptionalSubscript = "warning",
+                reportOverlappingOverload = "warning",
+                reportPrivateImportUsage = "warning",
+                reportPrivateUsage = "warning",
+                reportPropertyTypeMismatch = "warning",
+                reportSelfClsParameterName = "warning",
+                reportShadowedImports = "warning",
+                reportTypedDictNotRequiredAccess = "warning",
+                reportUninitializedInstanceVariable = "warning",
+                reportUnknownParameterType = "warning",
+                reportUnnecessaryCast = "warning",
+                reportUnnecessaryComparison = "warning",
+                reportUnnecessaryContains = "warning",
+                reportUnnecessaryIsInstance = "warning",
+                reportUnsupportedDunderAll = "warning",
+                reportUnusedClass = "warning",
+                reportUnusedCoroutine = "warning",
+                reportUnusedFunction = "warning",
+                reportUnusedImport = "warning",
+                reportUnusedVariable = "warning",
+                reportWildcardImportFromLibrary = "warning",
+              },
+            },
+          },
+        },
+      }
+      lspconfig.ruff_lsp.setup {
+        on_attach = on_attach,
+      }
+      -- lspconfig.mypy.setup {
+      --   on_attach = on_attach,
+      -- }
+      lspconfig.ruff.setup {
+        on_attach = on_attach,
+        settings = {
+          nativeServer = true,
+        },
+      }
       lspconfig.rust_analyzer.setup({
         on_attach = on_attach,
         settings = {
           ["rust-analyzer"] = {
-            cachePriming = {
-              enable = true,
-            },
-            cargo = {
-              features = "all",
-            },
             check = {
-              command = "clippy",
-              extraArgs = { "--profile", "rust-analyzer", "--", "-W", "clippy::disallowed_methods" },
+              command = "check",
+              extraArgs = { "--profile", "rust-analyzer" },
             },
-            lru = {
-              capacity = 512,
-            },
+            -- linkedProjects = { '/home/discord/dev/Cargo.toml' },
             workspace = {
               symbol = {
                 search = {
                   kind = "only_types",
-                  limit = 128,
                   scope = "workspace",
                 },
               },
@@ -216,11 +284,15 @@ return {
     build = ":MasonUpdate",
     opts = {
       ensure_installed = {
-        "rust-analyzer", -- rust
+        "rust-analyzer",       -- rust
         "lua-language-server", -- lua
-        "terraform-ls", -- terraform
-        "taplo", -- toml
-        "json-lsp", -- json
+        "terraform-ls",        -- terraform
+        "taplo",               -- toml
+        "json-lsp",            -- json
+        "ruff",
+        "ruff-lsp",
+        "pyright",
+        "mypy",
       },
     },
     config = function(_, opts)
@@ -313,7 +385,7 @@ return {
       end,
       formatters_by_ft = {
         lua = { "stylua" },
-        python = { "isort" },
+        python = { "ruff" },
         rust = { "rustfmt", lsp_format = "fallback" },
       },
     },

@@ -18,7 +18,6 @@ local config = {
         {
           "filename",
           path = 1,
-          -- padding = { left = 0 },
           symbols = {
             modified = " ", -- Text to show when the file is modified.
             readonly = " ", -- Text to show when the file is non-modifiable or readonly.
