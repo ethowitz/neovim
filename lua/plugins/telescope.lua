@@ -40,20 +40,20 @@ return {
         end,
         desc = "search oldfiles",
       },
-      {
-        "<C-p>",
-        function()
-          require("telescope.builtin").buffers({ sort_mru = true })
-        end,
-        desc = "search oldfiles",
-      },
-      {
-        "<C-n>",
-        function()
-          require("telescope.builtin").buffers({ sort_mru = true, ignore_current_buffer = true })
-        end,
-        desc = "search oldfiles",
-      },
+      -- {
+      --   "<C-p>",
+      --   function()
+      --     require("telescope.builtin").buffers({ sort_mru = true })
+      --   end,
+      --   desc = "search oldfiles",
+      -- },
+      -- {
+      --   "<C-n>",
+      --   function()
+      --     require("telescope.builtin").buffers({ sort_mru = true, ignore_current_buffer = true })
+      --   end,
+      --   desc = "search oldfiles",
+      -- },
       {
         "<leader>cf",
         function()

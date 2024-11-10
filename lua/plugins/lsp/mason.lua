@@ -13,6 +13,7 @@ return {
       "ruff",
       "pyright",
       "mypy",
+      "vtsls",
     },
   },
   config = function(_, opts)

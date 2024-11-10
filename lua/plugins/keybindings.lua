@@ -49,6 +49,8 @@ return {
     -- { "<leader>wc", ":close<CR>", desc = "close current window" },
     -- { "<leader>wh", ":sp<CR>", desc = "create a horizontal split" },
     -- { "<leader>wv", ":vsp<CR>", desc = "create a vertical split" },
+    { "<C-p>", ":bprev<CR>", desc = "previous buffer" },
+    { "<C-n>", ":bnext<CR>", desc = "next buffer" },
     { "<Esc>", ":noh<CR>", desc = "clear highlights" },
     {
       "[q",
